@@ -6,7 +6,6 @@ namespace SAS.Backend.Contracts.Fields
         public string CropType { get; init; } = string.Empty;
         public double Area { get; init; }
         public string? Location { get; init; }
-        public Guid UserId { get; init; }
     }
 }
 

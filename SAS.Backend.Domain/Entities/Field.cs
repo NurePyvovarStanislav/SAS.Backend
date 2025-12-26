@@ -8,10 +8,8 @@ namespace SAS.Backend.Domain.Entities
         public double Area { get; set; }
         public string? Location { get; set; }
 
-        public Guid UserId { get; set; }
-        public User User { get; set; } = null!;
-
         public ICollection<Sensor> Sensors { get; set; } = new List<Sensor>();
+        public ICollection<User> Users { get; set; } = new List<User>();
     }
 }
 

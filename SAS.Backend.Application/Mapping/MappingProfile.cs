@@ -3,6 +3,7 @@ using SAS.Backend.Contracts.Alerts;
 using SAS.Backend.Contracts.Fields;
 using SAS.Backend.Contracts.Measurements;
 using SAS.Backend.Contracts.Sensors;
+using SAS.Backend.Contracts.Users;
 using SAS.Backend.Domain.Entities;
 using DomainEnums = SAS.Backend.Domain.Enums;
 using ContractEnums = SAS.Backend.Contracts.Enums;
@@ -26,11 +27,19 @@ namespace SAS.Backend.Application.Mapping
 
             CreateMap<Measurement, MeasurementDto>().ReverseMap();
             CreateMap<MeasurementCreateDto, Measurement>();
+            CreateMap<MeasurementUpdateDto, Measurement>();
 
             CreateMap<Alert, AlertDto>()
                 .ForMember(d => d.Level, opt => opt.MapFrom(a => Enum.Parse<ContractEnums.AlertLevel>(a.Level.ToString())));
             CreateMap<AlertDto, Alert>()
                 .ForMember(d => d.Level, opt => opt.MapFrom(a => Enum.Parse<DomainEnums.AlertLevel>(a.Level.ToString())));
+
+            CreateMap<User, UserDto>()
+                .ForMember(d => d.Role, opt => opt.MapFrom(s => Enum.Parse<ContractEnums.UserRole>(s.Role.ToString())));
+            CreateMap<UserCreateDto, User>()
+                .ForMember(d => d.Role, opt => opt.MapFrom(s => Enum.Parse<DomainEnums.UserRole>(s.Role.ToString())));
+            CreateMap<UserUpdateDto, User>()
+                .ForMember(d => d.Role, opt => opt.MapFrom(s => Enum.Parse<DomainEnums.UserRole>(s.Role.ToString())));
         }
     }
 }

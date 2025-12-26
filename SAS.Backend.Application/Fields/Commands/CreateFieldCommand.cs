@@ -6,7 +6,7 @@ using SAS.Backend.Domain.Entities;
 
 namespace SAS.Backend.Application.Fields.Commands
 {
-    public record CreateFieldCommand(string Name, string CropType, double Area, string? Location, Guid UserId) : IRequest<FieldDto>;
+    public record CreateFieldCommand(string Name, string CropType, double Area, string? Location) : IRequest<FieldDto>;
 
     public class CreateFieldCommandHandler : IRequestHandler<CreateFieldCommand, FieldDto>
     {
@@ -27,8 +27,7 @@ namespace SAS.Backend.Application.Fields.Commands
                 Name = request.Name,
                 CropType = request.CropType,
                 Area = request.Area,
-                Location = request.Location,
-                UserId = request.UserId
+                Location = request.Location
             };
 
             _context.Fields.Add(field);

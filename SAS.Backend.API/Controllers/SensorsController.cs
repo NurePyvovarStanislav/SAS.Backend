@@ -6,17 +6,16 @@ using SAS.Backend.Contracts.Sensors;
 
 namespace SAS.Backend.API.Controllers
 {
-    [Route("api")]
     public class SensorsController : BaseController
     {
-        [HttpGet("fields/{fieldId:guid}/sensors")]
+        [HttpGet("{fieldId:guid}")]
         public async Task<ActionResult<IEnumerable<SensorDto>>> GetSensorsByField(Guid fieldId, CancellationToken cancellationToken)
         {
             var sensors = await Mediator.Send(new GetSensorsByFieldQuery(fieldId), cancellationToken);
             return Ok(sensors);
         }
 
-        [HttpPost("fields/{fieldId:guid}/sensors")]
+        [HttpPost("{fieldId:guid}")]
         public async Task<ActionResult<SensorDto>> CreateSensor(Guid fieldId, [FromBody] SensorCreateDto dto, CancellationToken cancellationToken)
         {
             var created = await Mediator.Send(
@@ -26,7 +25,7 @@ namespace SAS.Backend.API.Controllers
             return created is null ? NotFound($"Field {fieldId} not found") : CreatedAtAction(nameof(GetSensorsByField), new { fieldId }, created);
         }
 
-        [HttpPut("sensors/{id:guid}")]
+        [HttpPut("{id:guid}")]
         public async Task<ActionResult<SensorDto>> UpdateSensor(Guid id, [FromBody] SensorUpdateDto dto, CancellationToken cancellationToken)
         {
             var updated = await Mediator.Send(
@@ -36,7 +35,7 @@ namespace SAS.Backend.API.Controllers
             return updated is null ? NotFound() : Ok(updated);
         }
 
-        [HttpDelete("sensors/{id:guid}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteSensor(Guid id, CancellationToken cancellationToken)
         {
             var deleted = await Mediator.Send(new DeleteSensorCommand(id), cancellationToken);

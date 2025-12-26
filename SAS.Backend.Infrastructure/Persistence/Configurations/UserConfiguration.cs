@@ -31,13 +31,16 @@ namespace SAS.Backend.Infrastructure.Persistence.Configurations
             builder.Property(u => u.Phone)
                 .HasMaxLength(20);
 
+            builder.Property(u => u.FieldId)
+                .IsRequired(false);
+
             builder.HasIndex(u => u.Email)
                 .IsUnique();
 
-            builder.HasMany(u => u.Fields)
-                .WithOne(f => f.User)
-                .HasForeignKey(f => f.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(u => u.Field)
+                .WithMany(f => f.Users)
+                .HasForeignKey(u => u.FieldId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

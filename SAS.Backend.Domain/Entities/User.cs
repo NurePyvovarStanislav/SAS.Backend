@@ -11,6 +11,7 @@ namespace SAS.Backend.Domain.Entities
         public UserRole Role { get; set; }
         public string? Phone { get; set; }
 
-        public ICollection<Field> Fields { get; set; } = new List<Field>();
+        public Guid? FieldId { get; set; }
+        public Field? Field { get; set; }
     }
 }

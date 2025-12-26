@@ -25,7 +25,7 @@ namespace SAS.Backend.API.Controllers
         [HttpPost]
         public async Task<ActionResult<FieldDto>> CreateField([FromBody] FieldCreateDto dto, CancellationToken cancellationToken)
         {
-            var created = await Mediator.Send(new CreateFieldCommand(dto.Name, dto.CropType, dto.Area, dto.Location, dto.UserId), cancellationToken);
+            var created = await Mediator.Send(new CreateFieldCommand(dto.Name, dto.CropType, dto.Area, dto.Location), cancellationToken);
             return CreatedAtAction(nameof(GetField), new { id = created.FieldId }, created);
         }
 

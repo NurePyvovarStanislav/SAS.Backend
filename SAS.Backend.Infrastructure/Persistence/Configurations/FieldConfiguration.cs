@@ -25,15 +25,15 @@ namespace SAS.Backend.Infrastructure.Persistence.Configurations
             builder.Property(f => f.Location)
                 .HasMaxLength(500);
 
-            builder.HasOne(f => f.User)
-                .WithMany(u => u.Fields)
-                .HasForeignKey(f => f.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasMany(f => f.Sensors)
                 .WithOne(s => s.Field)
                 .HasForeignKey(s => s.FieldId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(f => f.Users)
+                .WithOne(u => u.Field)
+                .HasForeignKey(u => u.FieldId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

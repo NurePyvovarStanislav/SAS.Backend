@@ -6,7 +6,7 @@ using SAS.Backend.Application.Common.Interfaces;
 namespace SAS.Backend.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public abstract class BaseController : ControllerBase
     {
         private IMediator? _mediator;
