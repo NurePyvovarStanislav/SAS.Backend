@@ -6,7 +6,7 @@ using SAS.Backend.Contracts.Users;
 
 namespace SAS.Backend.Application.Users.Commands
 {
-    public record UpdateUserCommand(Guid UserId, string Email, string FullName, SAS.Backend.Contracts.Enums.UserRole Role, string? Phone, string? Password, Guid? FieldId) : IRequest<UserDto?>;
+    public record UpdateUserCommand(Guid UserId, string Email, string FullName, SAS.Backend.Contracts.Enums.UserRole Role, string? Phone, string? Password, Guid? FieldId, bool IsActive) : IRequest<UserDto?>;
 
     public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserDto?>
     {
@@ -32,6 +32,7 @@ namespace SAS.Backend.Application.Users.Commands
             user.Role = Enum.Parse<SAS.Backend.Domain.Enums.UserRole>(request.Role.ToString());
             user.Phone = request.Phone;
             user.FieldId = request.FieldId;
+            user.IsActive = request.IsActive;
             if (!string.IsNullOrWhiteSpace(request.Password))
             {
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);

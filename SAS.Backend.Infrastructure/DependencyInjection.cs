@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SAS.Backend.Application.Common.Interfaces;
+using SAS.Backend.Infrastructure.Integration.Authentication;
 using SAS.Backend.Infrastructure.Persistence;
 
 namespace SAS.Backend.Infrastructure
@@ -17,6 +18,7 @@ namespace SAS.Backend.Infrastructure
                 options.UseNpgsql(connectionString));
 
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
+            services.AddScoped<ITokenService, JwtService>();
 
             return services;
         }

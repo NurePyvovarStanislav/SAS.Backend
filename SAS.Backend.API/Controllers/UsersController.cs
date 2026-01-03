@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAS.Backend.Application.Users.Commands;
 using SAS.Backend.Application.Users.Queries;
@@ -5,6 +6,7 @@ using SAS.Backend.Contracts.Users;
 
 namespace SAS.Backend.API.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class UsersController : BaseController
     {
         [HttpGet]
@@ -24,14 +26,14 @@ namespace SAS.Backend.API.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDto>> CreateUser([FromBody] UserCreateDto dto, CancellationToken cancellationToken)
         {
-            var created = await Mediator.Send(new CreateUserCommand(dto.Email, dto.Password, dto.FullName, dto.Role, dto.Phone, dto.FieldId), cancellationToken);
+            var created = await Mediator.Send(new CreateUserCommand(dto.Email, dto.Password, dto.FullName, dto.Role, dto.Phone, dto.FieldId, dto.IsActive), cancellationToken);
             return created is null ? Conflict("Email already exists") : CreatedAtAction(nameof(GetUser), new { id = created.UserId }, created);
         }
 
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<UserDto>> UpdateUser(Guid id, [FromBody] UserUpdateDto dto, CancellationToken cancellationToken)
         {
-            var updated = await Mediator.Send(new UpdateUserCommand(id, dto.Email, dto.FullName, dto.Role, dto.Phone, dto.Password, dto.FieldId), cancellationToken);
+            var updated = await Mediator.Send(new UpdateUserCommand(id, dto.Email, dto.FullName, dto.Role, dto.Phone, dto.Password, dto.FieldId, dto.IsActive), cancellationToken);
             return updated is null ? NotFound() : Ok(updated);
         }
 

@@ -60,11 +60,13 @@ namespace SAS.Backend.Application.Measurements.Commands
                     measurement.Alert.Message = $"Sensor {sensor.Name} reported {request.Value} outside [{sensor.MinValue}; {sensor.MaxValue}]";
                     measurement.Alert.CreatedAt = DateTime.UtcNow;
                     measurement.Alert.IsResolved = false;
+                    measurement.Alert.ResolvedAt = null;
                 }
             }
             else if (measurement.Alert is not null)
             {
                 measurement.Alert.IsResolved = true;
+                measurement.Alert.ResolvedAt = DateTime.UtcNow;
             }
 
             await _context.SaveChangesAsync(cancellationToken);

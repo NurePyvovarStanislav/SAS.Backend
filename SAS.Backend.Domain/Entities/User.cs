@@ -10,7 +10,9 @@ namespace SAS.Backend.Domain.Entities
         public string FullName { get; set; } = null!;
         public UserRole Role { get; set; }
         public string? Phone { get; set; }
-
+        public bool IsActive { get; set; } = true;
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiresAt { get; set; }
         public Guid? FieldId { get; set; }
         public Field? Field { get; set; }
     }

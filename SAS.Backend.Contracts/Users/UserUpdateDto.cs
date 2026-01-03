@@ -10,6 +10,7 @@ namespace SAS.Backend.Contracts.Users
         public string? Phone { get; init; }
         public string? Password { get; init; }
         public Guid? FieldId { get; init; }
+        public bool IsActive { get; init; } = true;
     }
 }
 

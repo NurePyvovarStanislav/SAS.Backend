@@ -7,7 +7,7 @@ using SAS.Backend.Domain.Entities;
 
 namespace SAS.Backend.Application.Users.Commands
 {
-    public record CreateUserCommand(string Email, string Password, string FullName, SAS.Backend.Contracts.Enums.UserRole Role, string? Phone, Guid? FieldId) : IRequest<UserDto?>;
+    public record CreateUserCommand(string Email, string Password, string FullName, SAS.Backend.Contracts.Enums.UserRole Role, string? Phone, Guid? FieldId, bool IsActive) : IRequest<UserDto?>;
 
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserDto?>
     {
@@ -33,7 +33,8 @@ namespace SAS.Backend.Application.Users.Commands
                 FullName = request.FullName,
                 Role = Enum.Parse<SAS.Backend.Domain.Enums.UserRole>(request.Role.ToString()),
                 Phone = request.Phone,
-                FieldId = request.FieldId
+                FieldId = request.FieldId,
+                IsActive = request.IsActive
             };
 
             _context.Users.Add(user);

@@ -31,6 +31,16 @@ namespace SAS.Backend.Infrastructure.Persistence.Configurations
             builder.Property(u => u.Phone)
                 .HasMaxLength(20);
 
+            builder.Property(u => u.IsActive)
+                .IsRequired()
+                .HasDefaultValue(true);
+
+            builder.Property(u => u.RefreshToken)
+                .HasMaxLength(500);
+
+            builder.Property(u => u.RefreshTokenExpiresAt)
+                .IsRequired(false);
+
             builder.Property(u => u.FieldId)
                 .IsRequired(false);
 

@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAS.Backend.Application.Sensors.Commands;
 using SAS.Backend.Application.Sensors.Queries;
@@ -6,6 +7,7 @@ using SAS.Backend.Contracts.Sensors;
 
 namespace SAS.Backend.API.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class SensorsController : BaseController
     {
         [HttpGet("{fieldId:guid}")]

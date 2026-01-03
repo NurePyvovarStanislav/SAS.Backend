@@ -27,6 +27,9 @@ namespace SAS.Backend.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasDefaultValue(false);
 
+            builder.Property(a => a.ResolvedAt)
+                .IsRequired(false);
+
             builder.HasOne(a => a.Measurement)
                 .WithOne(m => m.Alert)
                 .HasForeignKey<Alert>(a => a.MeasurementId)

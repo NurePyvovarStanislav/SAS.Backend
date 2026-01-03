@@ -11,6 +11,7 @@ namespace SAS.Backend.Domain.Entities
         public string Message { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
         public bool IsResolved { get; set; }
+        public DateTime? ResolvedAt { get; set; }
     }
 }
 

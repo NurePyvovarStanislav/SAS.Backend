@@ -21,6 +21,7 @@ namespace SAS.Backend.Application.Alerts.Commands
             if (alert is null) return false;
 
             alert.IsResolved = request.IsResolved;
+            alert.ResolvedAt = request.IsResolved ? DateTime.UtcNow : null;
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }

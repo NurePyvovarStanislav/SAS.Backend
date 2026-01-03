@@ -10,6 +10,7 @@ namespace SAS.Backend.Contracts.Users
         public UserRole Role { get; init; } = UserRole.User;
         public string? Phone { get; init; }
         public Guid? FieldId { get; init; }
+        public bool IsActive { get; init; } = true;
     }
 }
 

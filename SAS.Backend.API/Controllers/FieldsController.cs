@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAS.Backend.Application.Fields.Commands;
 using SAS.Backend.Application.Fields.Queries;
@@ -6,6 +7,7 @@ using SAS.Backend.Contracts.Fields;
 
 namespace SAS.Backend.API.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class FieldsController : BaseController
     {
         [HttpGet]
