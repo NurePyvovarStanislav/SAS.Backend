@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAS.Backend.Application.Measurements.Commands;
 using SAS.Backend.Contracts.Measurements;
@@ -22,6 +23,7 @@ namespace SAS.Backend.API.Controllers
             return Ok(list);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<MeasurementDto>> CreateMeasurement([FromBody] MeasurementCreateDto dto, CancellationToken cancellationToken)
         {
