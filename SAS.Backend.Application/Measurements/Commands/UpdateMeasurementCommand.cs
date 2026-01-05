@@ -33,11 +33,16 @@ namespace SAS.Backend.Application.Measurements.Commands
             measurement.MeasuredAt = request.MeasuredAt;
 
             var sensor = measurement.Sensor;
-            var outOfRange = request.Value < sensor.MinValue || request.Value > sensor.MaxValue;
+            var hasMin = !double.IsNaN(sensor.MinValue);
+            var hasMax = !double.IsNaN(sensor.MaxValue);
+            var thresholdsConfigured = hasMin || hasMax;
+            var belowMin = hasMin && request.Value < sensor.MinValue;
+            var aboveMax = hasMax && request.Value > sensor.MaxValue;
+            var outOfRange = thresholdsConfigured && (belowMin || aboveMax);
 
-            if (outOfRange)
+            if (thresholdsConfigured && outOfRange)
             {
-                var level = request.Value < sensor.MinValue
+                var level = belowMin
                     ? SAS.Backend.Domain.Enums.AlertLevel.Low
                     : SAS.Backend.Domain.Enums.AlertLevel.High;
 
@@ -63,10 +68,18 @@ namespace SAS.Backend.Application.Measurements.Commands
                     measurement.Alert.ResolvedAt = null;
                 }
             }
-            else if (measurement.Alert is not null)
+            else if (thresholdsConfigured && measurement.Alert is not null)
             {
-                measurement.Alert.IsResolved = true;
-                measurement.Alert.ResolvedAt = DateTime.UtcNow;
+                var openAlerts = await _context.Alerts
+                    .Include(a => a.Measurement)
+                    .Where(a => !a.IsResolved && a.Measurement.SensorId == sensor.SensorId)
+                    .ToListAsync(cancellationToken);
+
+                foreach (var alert in openAlerts)
+                {
+                    alert.IsResolved = true;
+                    alert.ResolvedAt = DateTime.UtcNow;
+                }
             }
 
             await _context.SaveChangesAsync(cancellationToken);

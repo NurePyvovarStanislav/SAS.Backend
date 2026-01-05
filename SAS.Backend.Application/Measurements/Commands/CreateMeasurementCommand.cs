@@ -27,8 +27,12 @@ namespace SAS.Backend.Application.Measurements.Commands
 
             if (sensor is null)
             {
-                return null;
+                throw new KeyNotFoundException($"Sensor {request.SensorId} not found");
             }
+
+            var hasMin = !double.IsNaN(sensor.MinValue);
+            var hasMax = !double.IsNaN(sensor.MaxValue);
+            var thresholdsConfigured = hasMin || hasMax;
 
             var measurement = new Measurement
             {
@@ -40,9 +44,13 @@ namespace SAS.Backend.Application.Measurements.Commands
 
             _context.Measurements.Add(measurement);
 
-            if (request.Value < sensor.MinValue || request.Value > sensor.MaxValue)
+            var belowMin = hasMin && request.Value < sensor.MinValue;
+            var aboveMax = hasMax && request.Value > sensor.MaxValue;
+            var outOfRange = thresholdsConfigured && (belowMin || aboveMax);
+
+            if (outOfRange)
             {
-                var level = request.Value < sensor.MinValue
+                var level = belowMin
                     ? SAS.Backend.Domain.Enums.AlertLevel.Low
                     : SAS.Backend.Domain.Enums.AlertLevel.High;
 
@@ -57,6 +65,19 @@ namespace SAS.Backend.Application.Measurements.Commands
                 };
 
                 _context.Alerts.Add(alert);
+            }
+            else if (thresholdsConfigured)
+            {
+                var openAlerts = await _context.Alerts
+                    .Include(a => a.Measurement)
+                    .Where(a => !a.IsResolved && a.Measurement.SensorId == request.SensorId)
+                    .ToListAsync(cancellationToken);
+
+                foreach (var alert in openAlerts)
+                {
+                    alert.IsResolved = true;
+                    alert.ResolvedAt = DateTime.UtcNow;
+                }
             }
 
             await _context.SaveChangesAsync(cancellationToken);
