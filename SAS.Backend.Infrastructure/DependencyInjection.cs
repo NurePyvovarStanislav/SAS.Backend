@@ -5,6 +5,7 @@ using SAS.Backend.Application.Common.Interfaces;
 using SAS.Backend.Infrastructure.Administration;
 using SAS.Backend.Infrastructure.Integration.Authentication;
 using SAS.Backend.Infrastructure.Persistence;
+using SAS.Backend.Infrastructure.Security;
 
 namespace SAS.Backend.Infrastructure
 {
@@ -21,6 +22,7 @@ namespace SAS.Backend.Infrastructure
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<ITokenService, JwtService>();
             services.AddScoped<IDataAdministrationService, DataAdministrationService>();
+            services.AddScoped<IResourceAccessService, ResourceAccessService>();
 
             return services;
         }
