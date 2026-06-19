@@ -7,7 +7,7 @@ using SAS.Backend.Contracts.Fields;
 
 namespace SAS.Backend.API.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize]
     public class FieldsController : BaseController
     {
         [HttpGet]
@@ -24,6 +24,7 @@ namespace SAS.Backend.API.Controllers
             return field is null ? NotFound() : Ok(field);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult<FieldDto>> CreateField([FromBody] FieldCreateDto dto, CancellationToken cancellationToken)
         {
@@ -31,6 +32,7 @@ namespace SAS.Backend.API.Controllers
             return CreatedAtAction(nameof(GetField), new { id = created.FieldId }, created);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<FieldDto>> UpdateField(Guid id, [FromBody] FieldUpdateDto dto, CancellationToken cancellationToken)
         {
@@ -38,6 +40,7 @@ namespace SAS.Backend.API.Controllers
             return updated is null ? NotFound() : Ok(updated);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteField(Guid id, CancellationToken cancellationToken)
         {

@@ -7,7 +7,7 @@ using SAS.Backend.Contracts.Sensors;
 
 namespace SAS.Backend.API.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize]
     public class SensorsController : BaseController
     {
         [HttpGet("{fieldId:guid}")]
@@ -17,6 +17,7 @@ namespace SAS.Backend.API.Controllers
             return Ok(sensors);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost("{fieldId:guid}")]
         public async Task<ActionResult<SensorDto>> CreateSensor(Guid fieldId, [FromBody] SensorCreateDto dto, CancellationToken cancellationToken)
         {
@@ -27,6 +28,7 @@ namespace SAS.Backend.API.Controllers
             return created is null ? NotFound($"Field {fieldId} not found") : CreatedAtAction(nameof(GetSensorsByField), new { fieldId }, created);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<SensorDto>> UpdateSensor(Guid id, [FromBody] SensorUpdateDto dto, CancellationToken cancellationToken)
         {
@@ -37,6 +39,7 @@ namespace SAS.Backend.API.Controllers
             return updated is null ? NotFound() : Ok(updated);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteSensor(Guid id, CancellationToken cancellationToken)
         {
