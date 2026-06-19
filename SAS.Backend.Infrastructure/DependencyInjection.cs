@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SAS.Backend.Application.Common.Interfaces;
+using SAS.Backend.Infrastructure.Administration;
 using SAS.Backend.Infrastructure.Integration.Authentication;
 using SAS.Backend.Infrastructure.Persistence;
 
@@ -19,9 +20,9 @@ namespace SAS.Backend.Infrastructure
 
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<ITokenService, JwtService>();
+            services.AddScoped<IDataAdministrationService, DataAdministrationService>();
 
             return services;
         }
     }
 }
-

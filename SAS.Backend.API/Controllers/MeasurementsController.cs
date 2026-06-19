@@ -6,6 +6,7 @@ using SAS.Backend.Contracts.Measurements;
 
 namespace SAS.Backend.API.Controllers
 {
+    [Authorize]
     public class MeasurementsController : BaseController
     {
         [HttpGet("{id:guid}")]
@@ -31,6 +32,7 @@ namespace SAS.Backend.API.Controllers
             return created is null ? NotFound($"Sensor {dto.SensorId} not found") : Ok(created);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<MeasurementDto>> UpdateMeasurement(Guid id, [FromBody] MeasurementUpdateDto dto, CancellationToken cancellationToken)
         {
@@ -38,6 +40,7 @@ namespace SAS.Backend.API.Controllers
             return updated is null ? NotFound() : Ok(updated);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteMeasurement(Guid id, CancellationToken cancellationToken)
         {

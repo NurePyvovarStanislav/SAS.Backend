@@ -10,6 +10,7 @@ namespace SAS.Backend.API.Controllers
     [Authorize]
     public class FieldsController : BaseController
     {
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FieldDto>>> GetFields(CancellationToken cancellationToken)
         {

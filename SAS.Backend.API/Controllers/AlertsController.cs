@@ -1,10 +1,12 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAS.Backend.Application.Alerts.Queries;
 using SAS.Backend.Contracts.Alerts;
 
 namespace SAS.Backend.API.Controllers
 {
+    [Authorize]
     public class AlertsController : BaseController
     {
         [HttpGet]
@@ -33,6 +35,7 @@ namespace SAS.Backend.API.Controllers
             return updated ? NoContent() : NotFound();
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteAlert(Guid id, CancellationToken cancellationToken)
         {
@@ -41,4 +44,3 @@ namespace SAS.Backend.API.Controllers
         }
     }
 }
-

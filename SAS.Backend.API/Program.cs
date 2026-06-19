@@ -44,7 +44,25 @@ namespace SAS.Backend.API
                 };
             });
 
-            builder.Services.AddControllers();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("SasWeb", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
+            builder.Services
+                .AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(
+                        new System.Text.Json.Serialization.JsonStringEnumConverter()
+                    );
+                });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
@@ -89,6 +107,8 @@ namespace SAS.Backend.API
             }
 
             // app.UseHttpsRedirection();
+
+            app.UseCors("SasWeb");
 
             app.UseAuthentication();
             app.UseAuthorization();
