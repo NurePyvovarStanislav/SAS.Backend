@@ -22,71 +22,89 @@ namespace SAS.Backend.Infrastructure.Administration
         public async Task<AdministrationSnapshotDto> CreateSnapshotAsync(
             CancellationToken cancellationToken)
         {
-            var users = await _context.Users
+            // Сначала загружаем сущности из БД без преобразования enum в SQL.
+            var userEntities = await _context.Users
                 .AsNoTracking()
-                .Select(u => new UserBackupDto
-                {
-                    UserId = u.UserId,
-                    Email = u.Email,
-                    FullName = u.FullName,
-                    Role = (UserRole)u.Role,
-                    Phone = u.Phone,
-                    FieldId = u.FieldId,
-                    IsActive = u.IsActive
-                })
                 .ToListAsync(cancellationToken);
 
-            var fields = await _context.Fields
+            var fieldEntities = await _context.Fields
                 .AsNoTracking()
-                .Select(f => new FieldBackupDto
-                {
-                    FieldId = f.FieldId,
-                    Name = f.Name,
-                    CropType = f.CropType,
-                    Area = f.Area,
-                    Location = f.Location
-                })
                 .ToListAsync(cancellationToken);
 
-            var sensors = await _context.Sensors
+            var sensorEntities = await _context.Sensors
                 .AsNoTracking()
-                .Select(s => new SensorBackupDto
-                {
-                    SensorId = s.SensorId,
-                    Name = s.Name,
-                    SensorType = (SensorType)s.SensorType,
-                    MinValue = s.MinValue,
-                    MaxValue = s.MaxValue,
-                    Status = s.Status,
-                    InstalledAt = s.InstalledAt,
-                    FieldId = s.FieldId
-                })
                 .ToListAsync(cancellationToken);
 
-            var measurements = await _context.Measurements
+            var measurementEntities = await _context.Measurements
                 .AsNoTracking()
-                .Select(m => new MeasurementBackupDto
-                {
-                    MeasurementId = m.MeasurementId,
-                    SensorId = m.SensorId,
-                    Value = m.Value,
-                    MeasuredAt = m.MeasuredAt
-                })
                 .ToListAsync(cancellationToken);
 
-            var alerts = await _context.Alerts
+            var alertEntities = await _context.Alerts
                 .AsNoTracking()
-                .Select(a => new AlertBackupDto
-                {
-                    AlertId = a.AlertId,
-                    MeasurementId = a.MeasurementId,
-                    Level = (AlertLevel)a.Level,
-                    Message = a.Message,
-                    CreatedAt = a.CreatedAt,
-                    IsResolved = a.IsResolved,
-                    ResolvedAt = a.ResolvedAt
-                })
                 .ToListAsync(cancellationToken);
+
+            // Преобразования выполняются уже в памяти,
+            // поэтому PostgreSQL не пытается преобразовать названия enum.
+            var users = userEntities
+                .Select(user => new UserBackupDto
+                {
+                    UserId = user.UserId,
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    Role = (UserRole)(int)user.Role,
+                    Phone = user.Phone,
+                    FieldId = user.FieldId,
+                    IsActive = user.IsActive
+                })
+                .ToList();
+
+            var fields = fieldEntities
+                .Select(field => new FieldBackupDto
+                {
+                    FieldId = field.FieldId,
+                    Name = field.Name,
+                    CropType = field.CropType,
+                    Area = field.Area,
+                    Location = field.Location
+                })
+                .ToList();
+
+            var sensors = sensorEntities
+                .Select(sensor => new SensorBackupDto
+                {
+                    SensorId = sensor.SensorId,
+                    Name = sensor.Name,
+                    SensorType = (SensorType)(int)sensor.SensorType,
+                    MinValue = sensor.MinValue,
+                    MaxValue = sensor.MaxValue,
+                    Status = sensor.Status,
+                    InstalledAt = sensor.InstalledAt,
+                    FieldId = sensor.FieldId
+                })
+                .ToList();
+
+            var measurements = measurementEntities
+                .Select(measurement => new MeasurementBackupDto
+                {
+                    MeasurementId = measurement.MeasurementId,
+                    SensorId = measurement.SensorId,
+                    Value = measurement.Value,
+                    MeasuredAt = measurement.MeasuredAt
+                })
+                .ToList();
+
+            var alerts = alertEntities
+                .Select(alert => new AlertBackupDto
+                {
+                    AlertId = alert.AlertId,
+                    MeasurementId = alert.MeasurementId,
+                    Level = (AlertLevel)(int)alert.Level,
+                    Message = alert.Message,
+                    CreatedAt = alert.CreatedAt,
+                    IsResolved = alert.IsResolved,
+                    ResolvedAt = alert.ResolvedAt
+                })
+                .ToList();
 
             return new AdministrationSnapshotDto
             {
