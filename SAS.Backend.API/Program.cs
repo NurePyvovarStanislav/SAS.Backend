@@ -94,10 +94,29 @@ namespace SAS.Backend.API
 
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
+            var runMigrations = builder.Configuration.GetValue(
+                "RunMigrations",
+                true
+            );
+
+            var migrateOnly = builder.Configuration.GetValue(
+                "MigrateOnly",
+                false
+            );
+
+            if (runMigrations)
             {
-                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                using var scope = app.Services.CreateScope();
+
+                var db = scope.ServiceProvider
+                    .GetRequiredService<ApplicationDbContext>();
+
                 db.Database.Migrate();
+            }
+
+            if (migrateOnly)
+            {
+                return;
             }
 
             if (app.Environment.IsDevelopment())
@@ -114,6 +133,46 @@ namespace SAS.Backend.API
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MapGet(
+                "/health/live",
+                () => Results.Ok(new
+                {
+                    status = "Healthy"
+                })
+            ).AllowAnonymous();
+
+            app.MapGet(
+                "/health/ready",
+                async (
+                    ApplicationDbContext db,
+                    CancellationToken cancellationToken
+                ) =>
+                {
+                    var canConnect =
+                        await db.Database.CanConnectAsync(
+                            cancellationToken
+                        );
+
+                    return canConnect
+                        ? Results.Ok(new
+                        {
+                            status = "Ready"
+                        })
+                        : Results.StatusCode(
+                            StatusCodes.Status503ServiceUnavailable
+                        );
+                }
+            ).AllowAnonymous();
+
+            app.MapGet(
+                "/health/instance",
+                () => Results.Ok(new
+                {
+                    instance = Environment.MachineName,
+                    timestampUtc = DateTime.UtcNow
+                })
+            ).AllowAnonymous();
 
             app.Run();
         }

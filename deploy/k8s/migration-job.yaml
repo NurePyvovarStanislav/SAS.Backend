@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sas-db-migrate
+  namespace: sas
+
+spec:
+  backoffLimit: 3
+
+  template:
+    metadata:
+      labels:
+        app: sas-db-migrate
+
+    spec:
+      restartPolicy: Never
+
+      containers:
+        - name: migration
+          image: merryandrew2/sas-backend:lab4
+          imagePullPolicy: Always
+
+          envFrom:
+            - secretRef:
+                name: sas-secrets
+
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+
+            - name: RunMigrations
+              value: "true"
+
+            - name: MigrateOnly
+              value: "true"
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

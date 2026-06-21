@@ -13,6 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAS.Backend.Contracts", "SA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAS.Backend.Infrastructure", "SAS.Backend.Infrastructure\SAS.Backend.Infrastructure.csproj", "{DA4E2789-04B0-4BF6-AF3E-DB57B2F5524F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{F20D46FD-F3A1-411C-BB53-A81FD2495345}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.env.k8s = .env.k8s
+		.env.lab4 = .env.lab4
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
